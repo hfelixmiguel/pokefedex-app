@@ -126,7 +126,7 @@ export default function Home() {
     pokemon: Pokemon[],
     query?: string,
     sortOption = sortBy,
-    selectedType = selectedType
+    selectedTypeFilter = selectedType
   ) => {
     let result = [...pokemon];
 
@@ -139,9 +139,9 @@ export default function Home() {
     }
 
     // Apply type filter
-    if (selectedType) {
+    if (selectedTypeFilter) {
       result = result.filter(p => 
-        p.types.some(t => t.type.name === selectedType)
+        p.types.some(t => t.type.name === selectedTypeFilter)
       );
     }
 
@@ -168,7 +168,7 @@ export default function Home() {
   useEffect(() => {
     applyFiltersAndSort(allPokemon, searchQuery, sortBy, selectedType);
     setPage(1); // Reset to first page on filter change
-  }, [searchQuery, selectedType, sortBy]);
+  }, [searchQuery, selectedType, sortBy, applyFiltersAndSort, allPokemon]);
 
   /**
    * Get current page data
@@ -193,11 +193,11 @@ export default function Home() {
       <div className="space-y-4 mb-6">
         {/* Search Input */}
         <div>
-          <label htmlFor="search" className="sr-only">Search Pokémon</label>
+          <label htmlFor="search" className="sr-only">Search Pokemon</label>
           <input
             id="search"
             type="text"
-            placeholder="🔍 Search by name..."
+            placeholder="Search by name..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg"
@@ -205,21 +205,20 @@ export default function Home() {
         </div>
 
         {/* Active Filters */}
-        {(selectedType && (
-          <>
-            <p className="text-sm font-medium text-gray-700">Active Type Filter:</p>
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-blue-500"
+        {selectedType && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-700">Active Type Filter:</span>
+            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm capitalize">
+              {selectedType}
+            </span>
+            <button 
+              onClick={() => setSelectedType('')}
+              className="text-sm text-red-500 hover:text-red-700"
             >
-              {TYPE_FILTER_OPTIONS.filter(t => t.value === selectedType || 
-                (selectedType && t.value !== '' ? false : true)).map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </>
-        )))}
+              Clear
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -278,7 +277,7 @@ export default function Home() {
     if (hasError && errorDetails) {
       return (
         <div className="text-center py-16">
-          <p className="text-red-500 text-lg font-medium mb-2">⚠️ Error loading Pokémon</p>
+          <p className="text-red-500 text-lg font-medium mb-2">Error loading Pokemon</p>
           <p className="text-gray-600 mb-4">{errorDetails}</p>
           <button
             onClick={fetchPokemonList}
@@ -293,7 +292,7 @@ export default function Home() {
     if (filteredPokemon.length === 0 && !isLoading) {
       return (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">No Pokémon found matching your criteria.</p>
+          <p className="text-gray-500 text-lg">No Pokemon found matching your criteria.</p>
         </div>
       );
     }
@@ -332,7 +331,7 @@ export default function Home() {
               : 'bg-white border border-gray-200 hover:bg-gray-50'
           }`}
         >
-          ← Previous
+          Previous
         </button>
 
         <span className="px-4 py-2">
@@ -348,7 +347,7 @@ export default function Home() {
               : 'bg-white border border-gray-200 hover:bg-gray-50'
           }`}
         >
-          Next →
+          Next
         </button>
       </div>
     );
@@ -357,7 +356,7 @@ export default function Home() {
   function renderStatsSection() {
     return (
       <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">📊 Current Session Stats</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">Current Session Stats</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
             <p className="text-3xl font-bold text-blue-600">{allPokemon.length}</p>
@@ -373,7 +372,7 @@ export default function Home() {
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-orange-600">
-              {searchQuery ? '🔍' : selectedType ? '🏷️' : '✨'}
+              {searchQuery ? 'Yes' : selectedType ? 'Yes' : 'No'}
             </p>
             <p className="text-sm text-gray-500 mt-1">Active Filter</p>
           </div>
@@ -391,10 +390,10 @@ export default function Home() {
       {/* Header */}
       <header className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-          🐾 PokéDex Explorer
+          PokeDex Explorer
         </h1>
         <p className="text-gray-600 max-w-md mx-auto">
-          Discover all 151 Kanto Pokémon with powerful search and filters!
+          Discover all 151 Kanto Pokemon with powerful search and filters!
         </p>
       </header>
 
@@ -408,7 +407,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-4 flex justify-between items-center">
           <p className="text-gray-600">
-            Showing {filteredPokemon.length} of {allPokemon.length} Pokémon
+            Showing {filteredPokemon.length} of {allPokemon.length} Pokemon
           </p>
         </div>
 
