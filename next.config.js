@@ -1,34 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable server components by default (available in Next.js 14+)
   reactStrictMode: true,
 
-  // Output module instead of CommonJS for better ESM support
-  output: 'module',
+  // Output module format for better ESM support on Vercel
+  output: 'standalone',
 
-  // Configure image optimization
+  // Configure image optimization for Pokemon assets
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
+        hostname: '*.raw.githubusercontent.com',
       },
       {
         protocol: 'https',
-        hostname: 'img.pokemondb.net',
+        hostname: '*.img.pokemondb.net',
       },
       {
         protocol: 'https',
-        hostname: 'pokeresources.com',
+        hostname: '*.pokeresources.com',
       },
     ],
   },
 
-  // Enable experimental features for better performance
-  experimental: {
-    serverActions: true,
-  },
-
-  // API proxy settings (useful in production)
+  // API proxy settings for Pokemon data fetching
   async rewrites() {
     return [
       {
@@ -37,9 +33,6 @@ const nextConfig = {
       },
     ];
   },
-
-  // Enable gzip compression for smaller bundle sizes
-  compress: true,
 };
 
 module.exports = nextConfig;
