@@ -42,8 +42,5 @@
     "pokeapi"
   ],
   "author": "Felix Miguel",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "license": "MIT"
 }
