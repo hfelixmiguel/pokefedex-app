@@ -1,0 +1,50 @@
+# Next.js
+.next/
+out/
+
+# Production
+dist/
+
+# Testing
+coverage/
+*.test.ts.snap
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+
+# Environment variables
+.env.local
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+.cache/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
