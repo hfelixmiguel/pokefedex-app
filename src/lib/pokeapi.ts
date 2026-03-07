@@ -366,10 +366,10 @@ export async function batchGetPokemon(ids: number[]): Promise<PokeAPIResponse<Po
   
   if (uncachedIds.length > 0) {
     try {
-      const response = await fetchWithRetry(
-        `https://pokeapi.co/api/v2/pokemon?limit=${uncachedIds.length}`,
-        { params: { url: uncachedIds.join(',') } }
-      );
+      // Build query string for batch request
+      const url = `https://pokeapi.co/api/v2/pokemon?limit=${uncachedIds.length}&url=${encodeURIComponent(uncachedIds.join(','))}`;
+      
+      const response = await fetchWithRetry(url, {});
 
       let data: any;
       try {
