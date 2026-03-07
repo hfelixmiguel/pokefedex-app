@@ -400,8 +400,8 @@ export async function batchGetPokemon(ids: number[]): Promise<PokeAPIResponse<Po
     const cached = getCached<Pokemon>(`pokemon-${id}`);
     if (cached) return cached;
     
-    // Fetch individual if still missing
-    return getPokemon(id).data;
+    // Fetch individual if still missing - need to await the promise
+    return getPokemon(id).then(result => result.data);
   });
 
   return { data: allPokemon as Pokemon[] };
