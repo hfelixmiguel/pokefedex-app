@@ -8,6 +8,13 @@
  * - Responsive grid layout
  */
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'PokéDex Explorer - Home',
+  description: 'Discover all 151 Kanto Pokémon with powerful search and filters!',
+};
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
