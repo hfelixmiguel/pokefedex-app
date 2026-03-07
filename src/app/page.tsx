@@ -126,7 +126,7 @@ export default function Home() {
     pokemon: Pokemon[],
     query?: string,
     sortOption = sortBy,
-    selectedType = selectedType
+    filterType = selectedType
   ) => {
     let result = [...pokemon];
 
@@ -139,9 +139,9 @@ export default function Home() {
     }
 
     // Apply type filter
-    if (selectedType) {
+    if (filterType) {
       result = result.filter(p => 
-        p.types.some(t => t.type.name === selectedType)
+        p.types.some(t => t.type.name === filterType)
       );
     }
 
@@ -383,7 +383,7 @@ export default function Home() {
 
   // =============================================================================
   // Main Render
-// =============================================================================
+  // =============================================================================
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-8 px-4">
