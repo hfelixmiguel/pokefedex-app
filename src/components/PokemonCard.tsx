@@ -1,158 +1,91 @@
-/**
- * Pokémon Card Component
- * 
- * Displays a single Pokémon with sprite, name, types, and basic stats.
- * Mobile-first responsive design with TailwindCSS.
- */
+import { Pokemon } from "@/types/pokemon";
 
-'use client';
-
-import Image from 'next/image';
-import type { Pokemon } from '@/types/pokemon';
-
-interface PokemonCardProps {
-  pokemon: Pokemon;
-  onClick?: (pokemon: Pokemon) => void;
-  showStats?: boolean;
-}
-
-/**
- * Get a color based on Pokémon name for gradient background
- */
-function getNameColor(name: string): string {
-  const colors = [
-    'from-blue-500 to-purple-600',
-    'from-orange-400 to-red-500', 
-    'from-green-400 to-emerald-600',
-    'from-cyan-400 to-blue-500',
-    'from-yellow-400 to-orange-500',
-    'from-pink-400 to-purple-500',
-    'from-indigo-400 to-blue-500',
-  ];
-  const index = name.length % colors.length;
-  return colors[index];
-}
-
-/**
- * Get type badge styles
- */
-function getTypeBadgeStyle(type: string) {
-  const color = TYPE_COLORS[type] || '#9CA3AF';
-  
-  // Calculate contrast - use white text on light types, dark on others
-  const isLightType = ['water', 'ice', 'electric', 'fairy'].includes(type);
-  
-  return {
-    backgroundColor: color,
-    color: isLightType ? '#1F2937' : '#FFFFFF',
-  };
-}
-
-/**
- * Type colors for display
- */
-export const TYPE_COLORS = {
-  normal: '#A8A77A',
-  fire: '#EE8130',
-  water: '#6390F0',
-  electric: '#F7D02C',
-  grass: '#7AC74C',
-  ice: '#96D9D6',
-  fighting: '#C22E28',
-  poison: '#A33EA1',
-  ground: '#E2BF65',
-  flying: '#A98FF3',
-  psychic: '#F95587',
-  bug: '#A6B91A',
-  rock: '#B6A136',
-  ghost: '#735797',
-  dragon: '#6F35FC',
-  steel: '#B7B7CE',
-  dark: '#705746',
-  fairy: '#D685AD',
+const typeColors: Record<string, string> = {
+  fire: "bg-gradient-to-br from-orange-500 to-red-600 text-white",
+  water: "bg-gradient-to-br from-blue-500 to-cyan-600 text-white",
+  grass: "bg-gradient-to-br from-green-500 to-emerald-600 text-white",
+  electric: "bg-gradient-to-br from-yellow-400 to-amber-500 text-white",
+  ice: "bg-gradient-to-br from-cyan-400 to-blue-500 text-white",
+  fighting: "bg-gradient-to-br from-red-600 to-orange-700 text-white",
+  poison: "bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white",
+  ground: "bg-gradient-to-br from-amber-600 to-yellow-700 text-white",
+  flying: "bg-gradient-to-br from-indigo-400 to-violet-500 text-white",
+  psychic: "bg-gradient-to-br from-pink-500 to-rose-600 text-white",
+  bug: "bg-gradient-to-br from-lime-500 to-green-600 text-white",
+  rock: "bg-gradient-to-br from-orange-700 to-stone-600 text-white",
+  ghost: "bg-gradient-to-br from-violet-600 to-purple-800 text-white",
+  dragon: "bg-gradient-to-br from-indigo-600 to-blue-700 text-white",
+  steel: "bg-gradient-to-br from-gray-400 to-slate-500 text-white",
+  dark: "bg-gradient-to-br from-gray-700 to-black text-white",
+  normal: "bg-gradient-to-br from-gray-300 to-gray-400 text-gray-800",
+  fairy: "bg-gradient-to-br from-pink-400 to-rose-500 text-white",
 };
 
-export function PokemonCard({ pokemon, onClick, showStats = false }: PokemonCardProps) {
-  const typeColors = pokemon.types.map(t => getTypeBadgeStyle(t.type.name)).map(s => s.backgroundColor);
-  const gradientClass = getNameColor(pokemon.name); 
-
+export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   return (
-    <div 
-      className={`
-        relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300
-        bg-gradient-to-br ${gradientClass}
-        cursor-pointer transform hover:-translate-y-1
-      `}
-      onClick={() => onClick?.(pokemon)}
-    >
-      {/* Header */}
-      <div className="p-4 pb-2">
-        <h3 className="text-lg font-bold text-white text-center uppercase tracking-wide">
-          {pokemon.name}
-        </h3>
-      </div>
-
-      {/* Sprite */}
-      <div className="flex justify-center p-4 bg-white/10 backdrop-blur-sm">
-        {pokemon.sprites?.front_default ? (
-          <Image
+    <div className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+      {/* Hover overlay effect */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Pokemon Image with animation */}
+      <div className="relative h-48 flex items-center justify-center p-6 bg-gradient-to-b from-gray-50 to-white">
+        <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-20 transition-opacity duration-300">
+          <img
             src={pokemon.sprites.front_default}
-            alt={`${pokemon.name} sprite`}
-            width={120}
-            height={120}
-            className="object-contain filter drop-shadow-md hover:scale-110 transition-transform duration-300"
-            priority
+            alt={pokemon.name}
+            className="w-64 h-64 object-contain animate-pulse"
           />
-        ) : (
-          <div className="text-white/50 text-sm">No sprite available</div>
-        )}
+        </div>
+        <img
+          src={pokemon.sprites.front_default}
+          alt={pokemon.name}
+          className="w-32 h-32 object-contain drop-shadow-lg group-hover:scale-110 transition-transform duration-300 relative z-10"
+        />
       </div>
 
-      {/* Types */}
-      {pokemon.types.length > 0 && (
-        <div className="px-4 pb-3">
-          <div className="flex flex-wrap justify-center gap-1.5">
-            {pokemon.types.map((typeSlot, index) => {
-              const color = getTypeBadgeStyle(typeSlot.type.name);
-              return (
-                <span
-                  key={index}
-                  style={{ backgroundColor: color.backgroundColor }}
-                  className="px-2 py-0.5 text-xs font-semibold rounded-full whitespace-nowrap"
-                >
-                  {typeSlot.type.name.toUpperCase()}
-                </span>
-              );
-            })}
-          </div>
+      {/* Content */}
+      <div className="relative p-4">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-bold text-lg capitalize group-hover:text-blue-600 transition-colors duration-300">
+            {pokemon.name}
+          </h3>
+          <span className="text-sm font-mono bg-gray-100 text-gray-600 px-2 py-1 rounded-md">
+            #{String(pokemon.id).padStart(3, "0")}
+          </span>
         </div>
-      )}
 
-      {/* Stats Preview (optional) */}
-      {showStats && pokemon.stats.length > 0 && (
-        <div className="px-4 pb-4">
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-center bg-black/20 rounded-lg p-3">
-            {pokemon.stats.slice(0, 4).map((stat) => {
-              const statColor = TYPE_COLORS[stat.stat.name] || '#9CA3AF';
-              return (
-                <div key={stat.stat.name}>
-                  <span className="block text-[10px] opacity-80">
-                    {stat.stat.name.replace('-', ' ').toUpperCase()}
-                  </span>
-                  <span 
-                    style={{ color: statColor }}
-                    className="text-sm font-bold"
-                  >
-                    {stat.base_stat}
-                  </span>
-                </div>
-              );
-            })}
+        {/* Types with gradient badges */}
+        <div className="flex gap-1.5 flex-wrap">
+          {pokemon.types.map((type) => (
+            <span
+              key={type.type.name}
+              className={`px-3 py-1 text-xs font-medium rounded-full capitalize ${typeColors[type.type.name] || type.normal}`}
+            >
+              {type.type.name}
+            </span>
+          ))}
+        </div>
+
+        {/* Quick stats preview */}
+        <div className="mt-4 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <span>HP</span>
+            <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-green-500"
+                style={{ width: `${(pokemon.stats.find(s => s.stat.name === "hp")?.base_stat || 0) / 150 * 100}%` }}
+              />
+            </div>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* View details button */}
+      <div className="px-4 pb-4">
+        <button className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-300 group-hover:bg-blue-700">
+          View Details
+        </button>
+      </div>
     </div>
   );
 }
-
-export default PokemonCard;
