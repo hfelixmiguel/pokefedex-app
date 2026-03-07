@@ -5,6 +5,8 @@
  * Mobile-first responsive design with TailwindCSS.
  */
 
+'use client';
+
 import Image from 'next/image';
 import type { Pokemon } from '@/types/pokemon';
 

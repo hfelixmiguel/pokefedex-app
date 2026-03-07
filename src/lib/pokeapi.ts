@@ -311,12 +311,13 @@ export async function getPokemonSpecies(id: number): Promise<PokeAPIResponse<any
 /**
  * Get type effectiveness info (for battle features)
  */
-export async function getTypeEffectiveness(): Promise<PokeAPIResponse<Record<string, Record<string, number>>> > {
+export async function getTypeEffectiveness(): Promise<PokeAPIResponse<Record<string, Record<string, number>>>> {
   const cacheKey = 'type-effectiveness';
   
-  const cached = getCached(cacheKey);
+  // Use unknown type for cache to avoid type mismatch
+  const cached = getCached<unknown>(cacheKey);
   if (cached) {
-    return { data: cached, fromCache: true };
+    return { data: cached as Record<string, Record<string, number>>, fromCache: true };
   }
 
   try {
@@ -365,10 +366,10 @@ export async function batchGetPokemon(ids: number[]): Promise<PokeAPIResponse<Po
   
   if (uncachedIds.length > 0) {
     try {
-      const response = await fetchWithRetry(
-        `https://pokeapi.co/api/v2/pokemon?limit=${uncachedIds.length}`,
-        { params: { url: uncachedIds.join(',') } }
-      );
+      // Build query string for batch request
+      const url = `https://pokeapi.co/api/v2/pokemon?limit=${uncachedIds.length}&url=${encodeURIComponent(uncachedIds.join(','))}`;
+      
+      const response = await fetchWithRetry(url, {});
 
       let data: any;
       try {
@@ -399,8 +400,8 @@ export async function batchGetPokemon(ids: number[]): Promise<PokeAPIResponse<Po
     const cached = getCached<Pokemon>(`pokemon-${id}`);
     if (cached) return cached;
     
-    // Fetch individual if still missing
-    return getPokemon(id).data;
+    // Fetch individual if still missing - need to await the promise
+    return getPokemon(id).then(result => result.data);
   });
 
   return { data: allPokemon as Pokemon[] };

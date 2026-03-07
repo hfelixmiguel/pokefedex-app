@@ -126,7 +126,7 @@ export default function Home() {
     pokemon: Pokemon[],
     query?: string,
     sortOption = sortBy,
-    selectedType = selectedType
+    filterType = selectedType
   ) => {
     let result = [...pokemon];
 
@@ -139,9 +139,9 @@ export default function Home() {
     }
 
     // Apply type filter
-    if (selectedType) {
+    if (filterType) {
       result = result.filter(p => 
-        p.types.some(t => t.type.name === selectedType)
+        p.types.some(t => t.type.name === filterType)
       );
     }
 
@@ -205,7 +205,7 @@ export default function Home() {
         </div>
 
         {/* Active Filters */}
-        {(selectedType && (
+        {selectedType && (
           <>
             <p className="text-sm font-medium text-gray-700">Active Type Filter:</p>
             <select
@@ -213,13 +213,12 @@ export default function Home() {
               onChange={(e) => setSelectedType(e.target.value)}
               className="px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-blue-500"
             >
-              {TYPE_FILTER_OPTIONS.filter(t => t.value === selectedType || 
-                (selectedType && t.value !== '' ? false : true)).map(opt => (
+              {TYPE_FILTER_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </>
-        )))}
+        )}
       </div>
     );
   }
@@ -384,7 +383,7 @@ export default function Home() {
 
   // =============================================================================
   // Main Render
-// =============================================================================
+  // =============================================================================
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-8 px-4">
