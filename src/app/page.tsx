@@ -8,6 +8,8 @@
  * - Responsive grid layout
  */
 
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import PokemonCard from '@/components/PokemonCard';
 import type { Pokemon, PokemonStatName, PokemonTypeName } from '@/types/pokemon';
