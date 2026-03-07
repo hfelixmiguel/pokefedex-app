@@ -311,12 +311,13 @@ export async function getPokemonSpecies(id: number): Promise<PokeAPIResponse<any
 /**
  * Get type effectiveness info (for battle features)
  */
-export async function getTypeEffectiveness(): Promise<PokeAPIResponse<Record<string, Record<string, number>>> > {
+export async function getTypeEffectiveness(): Promise<PokeAPIResponse<Record<string, Record<string, number>>>> {
   const cacheKey = 'type-effectiveness';
   
-  const cached = getCached(cacheKey);
+  // Use unknown type for cache to avoid type mismatch
+  const cached = getCached<unknown>(cacheKey);
   if (cached) {
-    return { data: cached, fromCache: true };
+    return { data: cached as Record<string, Record<string, number>>, fromCache: true };
   }
 
   try {
